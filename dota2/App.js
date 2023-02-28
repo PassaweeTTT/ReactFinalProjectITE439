@@ -1,44 +1,85 @@
-import { View, Text, FlatList, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, ActivityIndicator, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 
-import { NavigationContainer} from "@react-navigation/native"
+
+import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 import RandomPage from "./component/RandomPage";
 import HeroPage from "./component/HeroPage";
+import GitPage from "./component/GitPage";
 
 function HeroPageScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <HeroPage/>
+    <View style={{ flex: 1, 
+      justifyContent: "center", 
+      alignItems: "center",
+      backgroundColor:"#2F2F2F"}}>
+      <HeroPage />
     </View>
   );
 }
 
 function RandomPageScreen() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={{ flex: 1, 
+      justifyContent: "center", 
+      alignItems: "center",
+      backgroundColor:"#2F2F2F"}}>
       <RandomPage/>
     </View>
   );
 }
-const Tab = createBottomTabNavigator();
 
-function MyTabs() {
+function GitPageScreen() {
   return (
-    <Tab.Navigator >
-      <Tab.Screen name="Home" component={HeroPageScreen} />
-      <Tab.Screen name="Random" component={RandomPageScreen} />
-    </Tab.Navigator>
+    <View style={{ flex: 1, 
+    justifyContent: "center", 
+    alignItems: "center",
+    backgroundColor:"#2F2F2F"}}>
+      <GitPage/>
+    </View>
   );
 }
 
-const App = () => {
+const Tab = createBottomTabNavigator();
+
+export default function App() {
   return (
     <NavigationContainer>
-      <MyTabs/>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === "Home") {
+              iconName = focused ? "star-sharp" : "star-outline";
+              size = focused ? size + 8 : size + 5;
+            } else if (route.name === "Random Hero") {
+              iconName = focused ? "ios-cube" : "ios-cube-outline";
+              size = focused ? size + 8 : size + 5;
+            } else if (route.name === "Github") {
+              iconName = focused ? "ios-logo-github" : "ios-logo-github";
+              size = focused ? size + 8 : size + 5;
+            }
+
+            // You can return any component that you like here!
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+        })}
+        tabBarOptions={{
+          activeTintColor: "#B32E2E",
+          inactiveTintColor: "gray",
+          activeBackgroundColor: "white",
+          inactiveBackgroundColor: "#2F2F2F",
+          style: { height: 80 },
+        }}
+      >
+        <Tab.Screen name="Home" component={HeroPageScreen} />
+        <Tab.Screen name="Random Hero" component={RandomPageScreen} />
+        <Tab.Screen name="Github" component={GitPageScreen} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
-};
-
-export default App;
+}
