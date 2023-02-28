@@ -26,7 +26,7 @@ const Tab = createBottomTabNavigator();
 
 function MyTabs() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator >
       <Tab.Screen name="Home" component={HeroPageScreen} />
       <Tab.Screen name="Random" component={RandomPageScreen} />
     </Tab.Navigator>
@@ -36,7 +36,7 @@ function MyTabs() {
 const App = () => {
   return (
     <NavigationContainer>
-      <MyTabs />
+      <MyTabs/>
     </NavigationContainer>
   );
 };
