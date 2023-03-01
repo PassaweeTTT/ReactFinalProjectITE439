@@ -45,17 +45,29 @@ const RandomPage = () => {
 
   const spin = spinValue.interpolate({
     inputRange: [0, 1],
-    outputRange: ["0deg", "360deg"],
+    outputRange: ["0deg", "720deg"],
   });
+
+  const handleHeroClick = (localized_name) => {
+    const url = `https://www.dota2protracker.com/hero/${localized_name.replace(
+      / /g,
+      "%20"
+    )}#`;
+    console.log(url);
+    console.log("Hi");
+    Linking.openURL(url);
+  };
 
   return (
     <View style={styles.container}>
-      <Animated.Image
-        source={{
-          uri: `https://api.opendota.com${hero ? hero.img : ""}`,
-        }}
-        style={[styles.image, { transform: [{ rotate: spin }] }]}
-      />
+      <TouchableOpacity>
+        <Animated.Image
+          source={{
+            uri: `https://api.opendota.com${hero ? hero.img : ""}`,
+          }}
+          style={[styles.image, { transform: [{ rotate: spin }] }]}
+        />
+      </TouchableOpacity>
       <Text style={styles.text}>
         {hero ? hero.localized_name : "Random Hero"}
       </Text>
