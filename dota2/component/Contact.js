@@ -1,12 +1,12 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import React from 'react';
+import { View, Text } from 'react-native';
 
 const Contact = () => {
   return (
-    <View>
+    <View style={{ padding: 16 }}>
       <Text>Contact</Text>
     </View>
-  )
-}
+  );
+};
 
-export default Contact
+export default Contact;

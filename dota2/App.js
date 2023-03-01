@@ -9,7 +9,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import RandomPage from "./component/RandomPage";
 import HeroPage from "./component/HeroPage";
 import GitPage from "./component/GitPage";
-import Contact from "./component/Contact";
+
+
 
 function HeroPageScreen() {
   return (
@@ -43,6 +44,7 @@ function GitPageScreen() {
     </View>
   );
 }
+
 
 const Tab = createBottomTabNavigator();
 
