@@ -9,6 +9,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import RandomPage from "./component/RandomPage";
 import HeroPage from "./component/HeroPage";
 import GitPage from "./component/GitPage";
+import Contact from "./component/Contact";
 
 function HeroPageScreen() {
   return (
@@ -50,6 +51,7 @@ export default function App() {
     <NavigationContainer>
       <Tab.Navigator
         screenOptions={({ route }) => ({
+          headerTintColor: 'white',
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
 
@@ -67,13 +69,16 @@ export default function App() {
             // You can return any component that you like here!
             return <Ionicons name={iconName} size={size} color={color} />;
           },
+          headerStyle: {
+            backgroundColor: '#242424',
+          },
         })}
         tabBarOptions={{
-          activeTintColor: "#B32E2E",
-          inactiveTintColor: "gray",
+          activeTintColor: "#CB3D3D",
+          inactiveTintColor: "#FFFFFF",
           activeBackgroundColor: "white",
-          inactiveBackgroundColor: "#2F2F2F",
-          style: { height: 80 },
+          inactiveBackgroundColor: "#242424",
+          style: { height: 80, backgroundColor: "#242424" },
         }}
       >
         <Tab.Screen name="Home" component={HeroPageScreen} />
