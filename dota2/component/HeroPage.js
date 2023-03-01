@@ -1,12 +1,11 @@
+import { View, Text, FlatList, ActivityIndicator, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, ActivityIndicator, Image } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
-import DropDownPicker from "react-native-dropdown-picker";
+
 const HeroPage = () => {
   const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState();
-  const [sortBy, setSortBy] = useState("role");
-  const [sortOrder, setSortOrder] = useState("desc");
+  const [data, setData] = useState([]);
+  const [sortType, setSortType] = useState("");
+  const [sortDirection, setSortDirection] = useState("asc");
 
   const getDataDota = async () => {
     try {
@@ -22,68 +21,68 @@ const HeroPage = () => {
     }
   };
 
-  const sortData = () => {
-    const sortedData = [...data];
-    if (sortBy === "localized_name") {
-      sortedData.sort((a, b) =>
-        sortOrder === "asc"
-          ? a.localized_name.localeCompare(b.localized_name)
-          : b.localized_name.localeCompare(a.localized_name)
-      );
-    } else if (sortBy === "winrate") {
-      sortedData.sort((a, b) => {
-        const winrateA = (a.pro_win * 100) / a.pro_pick;
-        const winrateB = (b.pro_win * 100) / b.pro_pick;
-        return sortOrder === "asc" ? winrateA - winrateB : winrateB - winrateA;
-      });
-    } else {
-      sortedData.sort((a, b) =>
-        sortOrder === "asc"
-          ? a[sortBy].localeCompare(b[sortBy])
-          : b[sortBy].localeCompare(a[sortBy])
-      );
+  const handleSort = (type) => {
+    let newData = [...data];
+
+    if (type === "role") {
+      newData.sort((a, b) => a.roles[0].localeCompare(b.roles[0]));
+    } else if (type === "localized_name") {
+      newData.sort((a, b) => a.localized_name.localeCompare(b.localized_name));
+    } else if (type === "winrate") {
+      newData.sort((a, b) => ((b.pro_win * 100) / b.pro_pick) - ((a.pro_win * 100) / a.pro_pick));
     }
-    setData(sortedData);
+
+    if (type === sortType && sortDirection === "asc") {
+      newData.reverse();
+      setSortDirection("desc");
+    } else {
+      setSortDirection("asc");
+    }
+
+    setData(newData);
+    setSortType(type);
   };
 
   useEffect(() => {
     getDataDota();
   }, []);
 
-  useEffect(() => {
-    sortData();
-  }, [sortBy, sortOrder]);
-
-  const handleSortByChange = (value) => {
-    if (value !== sortBy) {
-      setSortBy(value);
-      setSortOrder("desc");
+  const renderArrow = (type) => {
+    if (type === sortType) {
+      if (sortDirection === "asc") {
+        return (
+          <Text style={{ marginLeft: 5, color: "white" }}>
+            &#9650;
+          </Text>
+        );
+      } else {
+        return (
+          <Text style={{ marginLeft: 5, color: "white" }}>
+            &#9660;
+          </Text>
+        );
+      }
     } else {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+      return null;
     }
   };
 
   return (
     <View style={{ flex: 1, padding: 30 }}>
-      <View style={{ flexDirection: "row", marginBottom: 10 }}>
-        <Text style={{ marginRight: 10 }}>Sort By:</Text>
-        <Dropdown
-          options={[
-            { label: "Role", value: "role" },
-            { label: "Name", value: "localized_name" },
-            { label: "Win Rate", value: "winrate" },
-          ]}
-          value={sortBy}
-          onChange={(value) => handleSortByChange(value)}
-        />
-        <FontAwesome5
-          name={
-            sortOrder === "asc" ? "sort-amount-down-alt" : "sort-amount-up-alt"
-          }
-          size={20}
-          color="black"
-          style={{ marginLeft: 10 }}
-        />
+      <View style={{ flexDirection: "row", justifyContent: "flex-start", marginBottom: 10 }}>
+        <Text  style={{ color:"white" ,fontSize:15}}>Sort By  </Text>
+        <TouchableOpacity style={{ marginRight: 10 }} onPress={() => handleSort("role")}>
+          <Text style={{ color: sortType === "role" ? "red" : "white" }}>Role</Text>
+          {renderArrow("role")}
+        </TouchableOpacity>
+        <TouchableOpacity style={{ marginRight: 10 }} onPress={() => handleSort("localized_name")}>
+          <Text style={{ color: sortType === "localized_name" ? "red" : "white" }}>Name</Text>
+          {renderArrow("localized_name")}
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handleSort("winrate")}>
+          <Text style={{ color: sortType === "winrate" ? "red" : "white" }}>Winrate</Text>
+          {renderArrow("winrate")}
+        </TouchableOpacity>
       </View>
       {isLoading ? (
         <ActivityIndicator />
@@ -92,15 +91,26 @@ const HeroPage = () => {
           data={data}
           keyExtractor={({ id }, index) => id}
           renderItem={({ item }) => (
-            <View style={{ flexDirection: "row", marginBottom: 10 }}>
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 10,
+              }}
+            >
               <Image
                 resizeMethod="cover"
                 source={{ uri: item.img }}
-                style={{ width: 60, height: 30, marginRight: 10 }}
+                style={{ width: 60, height: 30 }}
               />
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: "white" }}>{item.localized_name}</Text>
-                <Text style={{ color: "white" }}>
+              <View style={{ flex: 1, marginLeft: 10 }}>
+                <Text
+                  style={{ color: "white", paddingBottom: 5, fontSize: 16 }}
+                >
+                  {item.localized_name}
+                </Text>
+                <Text style={{ color: "white", fontSize: 12 }}>
                   Win rate: {((item.pro_win * 100) / item.pro_pick).toFixed(2)}%
                 </Text>
               </View>
